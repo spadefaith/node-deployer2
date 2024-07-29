@@ -1,0 +1,26 @@
+.input-dynamic-one-container {
+  .kv-list,
+  .kv-form {
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-columns: 1fr 80px;
+    grid-gap: 4px;
+    // justify-items: center;
+    margin-top: 4px;
+
+    .btn {
+      margin-bottom: 1rem;
+    }
+    .kv-left {
+      display: grid;
+      grid-auto-flow: column;
+      grid-gap: 4px;
+      align-content: center;
+    }
+
+    .kv-right {
+      display: grid;
+      align-items: center;
+    }
+  }
+}

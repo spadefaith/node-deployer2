@@ -1,0 +1,64 @@
+@import "../../styles/mixin.scss";
+
+.control-select {
+  background-color: #f9f9fa;
+  margin-bottom: 10px;
+  border-radius: 16px;
+  padding-bottom: 10px;
+  label {
+    padding: 8px 16px 0px;
+    margin-bottom: 0px;
+    color: #00a651;
+  }
+
+  .control-container {
+    position: relative;
+
+    input {
+      border: none;
+      background-color: #f9f9fa;
+      padding: 0px 16px;
+      color: black;
+      height: 24px;
+
+      @include placeholder {
+        color: #b1b3b5;
+      }
+
+      &:focus {
+        border: none;
+        box-shadow: none;
+        background-color: #f9f9fa;
+      }
+    }
+
+    .help-target {
+      width: 20px;
+      height: 20px;
+      display: inline-block;
+      // position: relative;
+      left: 8px;
+      top: -5px;
+      position: absolute;
+      img.help-icon {
+        display: block;
+      }
+    }
+
+    img.select-arrow {
+      position: absolute;
+      right: 16px;
+      top: -5px;
+    }
+  }
+
+  &.has-help {
+    input {
+      padding: 0px 16px 0px 35px;
+    }
+
+    label {
+      padding: 8px 16px 0px 35px;
+    }
+  }
+}

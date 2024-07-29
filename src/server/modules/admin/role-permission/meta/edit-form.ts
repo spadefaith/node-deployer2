@@ -1,0 +1,97 @@
+export default [
+  {
+    display: "Account ID",
+    name: "account_id",
+    placeholder: "account id",
+    tag: "input",
+    type: "hidden",
+  },
+  {
+    display: "First Name",
+    name: "first_name",
+    placeholder: "first name",
+    tag: "input",
+    type: "text",
+    label: true,
+  },
+  {
+    display: "Last Name",
+    name: "last_name",
+    placeholder: "last name",
+    tag: "input",
+    type: "text",
+    label: true,
+  },
+  {
+    display: "Middle Name",
+    name: "middle_name",
+    placeholder: "middle name",
+    tag: "input",
+    type: "text",
+    label: true,
+  },
+  {
+    display: "Email",
+    name: "email",
+    placeholder: "email address",
+    tag: "input",
+    type: "email",
+    label: true,
+    validator: "required=true, email=true",
+  },
+  {
+    display: "Username",
+    name: "username",
+    placeholder: "username",
+    tag: "input",
+    type: "text",
+    label: true,
+    validator: "required=true, string=true",
+  },
+
+  // {
+  //   display: "Password",
+  //   name: "password",
+  //   placeholder: "password",
+  //   tag: "input",
+  //   type: "text",
+  //   label: true,
+  //   validator: "required=true, string=true",
+  // },
+
+  {
+    display: "Role",
+    name: "role_id",
+    placeholder: "role",
+    tag: "select",
+    options: [],
+    label: true,
+    relation: {
+      path: "roles/options?type=form",
+      attributes: [
+        ["role_id", "value"],
+        ["desc", "display"],
+      ],
+      defaultValue: "Select user role",
+    },
+    validator: "required=true",
+  },
+  {
+    display: "Status",
+    name: "is_active",
+    placeholder: "status",
+    tag: "select",
+    options: [
+      {
+        value: 1,
+        display: "Active",
+      },
+      {
+        value: 0,
+        display: "In Active",
+      },
+    ],
+    label: true,
+    validator: "required=true",
+  },
+];

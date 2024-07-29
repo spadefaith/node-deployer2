@@ -1,0 +1,46 @@
+.drawer-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  z-index: 9999;
+
+  height: 100vh;
+  width: 100%;
+
+  transition: all 0.2s ease;
+
+  background-color: transparent;
+
+  .drawer-content {
+    transition: all 0.2s ease;
+    left: -100px;
+    position: fixed;
+    opacity: 0;
+
+    height: 100%;
+    width: 50vw;
+    max-width: 600px;
+    min-width: 400px;
+    z-index: 999999;
+    overflow: hidden;
+
+    > div {
+      // z-index: 999999;
+      // position: absolute;
+      overflow: auto;
+    }
+  }
+
+  &.show-bg {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  &.show {
+    .drawer-content {
+      opacity: 1;
+      left: 0px;
+    }
+  }
+}

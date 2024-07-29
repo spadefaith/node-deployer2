@@ -1,0 +1,23 @@
+@import "../styles/query.scss";
+.layout-container {
+  .layout-content {
+    display: grid;
+    grid-template-areas: "sidebar header" "sidebar main";
+    grid-template-columns: 300px calc(100vw - 300px);
+    grid-template-rows: 75px 1fr;
+
+    .sidebar {
+      grid-area: sidebar;
+    }
+    .header {
+      grid-area: header;
+    }
+    .main {
+      grid-area: main;
+    }
+  }
+}
+
+body {
+  background-color: #f7f7f7;
+}

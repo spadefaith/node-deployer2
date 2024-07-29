@@ -1,0 +1,27 @@
+@import "../../styles/query.scss";
+
+.form-group-controls {
+  display: flex;
+  grid-auto-flow: column;
+  grid-gap: 8px;
+
+  &.responsive {
+    display: grid;
+    grid-auto-flow: row;
+
+    .form-group {
+      width: 100% !important;
+    }
+  }
+
+  @include media("<=600px") {
+    grid-auto-flow: row;
+  }
+
+  .form-control-item {
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    margin: 8px 0px;
+    padding: 8px;
+    border-radius: 4px;
+  }
+}

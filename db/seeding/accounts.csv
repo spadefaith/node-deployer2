@@ -1,0 +1,2 @@
+first_name,last_name,username,email,token,role_id,password,is_active
+superadmin,superadmin,superadmin,superadmin@gmail.com,,1,$2a$10$unXntbLe6CZZSnGSp2JF/u/DK0OmR162ubI.shh37c44a8.56clNK,1

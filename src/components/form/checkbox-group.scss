@@ -1,0 +1,12 @@
+.checkbox-container {
+  display: grid;
+  grid-auto-flow: row;
+
+  .checkbox-item {
+    input {
+    }
+    label {
+      padding-left: 4px;
+    }
+  }
+}

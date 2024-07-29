@@ -1,0 +1,8 @@
+
+
+POST http://localhost:5173/api/client/auth/login
+
+{
+    "username":"test",
+    "password":"test",
+}

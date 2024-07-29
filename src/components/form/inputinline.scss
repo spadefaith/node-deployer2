@@ -1,0 +1,30 @@
+@import "../../styles/mixin.scss";
+
+.control-input-inline {
+  background-color: #f9f9fa;
+  margin-bottom: 10px;
+  border-radius: 16px;
+  padding-bottom: 10px;
+  label {
+    padding: 8px 16px 0px;
+    margin-bottom: 0px;
+    color: #00a651;
+  }
+  input {
+    border: none;
+    background-color: #f9f9fa;
+    padding: 0px 16px;
+    color: black;
+    height: 24px;
+
+    @include placeholder {
+      color: #b1b3b5;
+    }
+
+    &:focus {
+      border: none;
+      box-shadow: none;
+      background-color: #f9f9fa;
+    }
+  }
+}
