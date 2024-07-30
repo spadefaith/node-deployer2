@@ -118,7 +118,7 @@ export const AccountPage = component$((props) => {
     <div>
       <Table
         paginateHandler={paginateHandler}
-        columns={columns.value}
+        columns={columns}
         rowActionHandler={rowActionHandler}
       />
 

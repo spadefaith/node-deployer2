@@ -166,7 +166,7 @@ export default component$((props) => {
           { display: "Environment Variable" },
         ]}
       />
-      <Table paginateHandler={paginateHandler} columns={columns.value} />
+      <Table paginateHandler={paginateHandler} columns={columns} />
 
       {showDrawer.value ? (
         <Drawer handler={drawerHandler}>

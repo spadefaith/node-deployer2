@@ -52,7 +52,7 @@ export default component$((props) => {
           { display: "Role Permission" },
         ]}
       />
-      <Table paginateHandler={paginateHandler} columns={columns.value} />
+      <Table paginateHandler={paginateHandler} columns={columns} />
     </div>
   );
 });

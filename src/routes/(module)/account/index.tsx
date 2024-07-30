@@ -81,6 +81,7 @@ export const AccountPage = component$((props) => {
   const tabContext = useContext(TabContext);
   const showDrawer = useSignal(false);
   const actionCreate = useCreate();
+
   useTask$(async () => {
     meta.value = await getMeta();
 
@@ -120,7 +121,7 @@ export const AccountPage = component$((props) => {
 
   return (
     <div>
-      <Table paginateHandler={paginateHandler} columns={columns.value} />
+      <Table paginateHandler={paginateHandler} columns={columns} />
 
       {showDrawer.value ? (
         <Drawer handler={drawerHandler}>

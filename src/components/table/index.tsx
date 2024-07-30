@@ -21,7 +21,7 @@ const Table = component$(
     rowActionHandler?: QRL<(e: any) => any>;
     rowMovedHandler?: QRL<(e: any) => any>;
     isReload?: any;
-    columns: any[];
+    columns: any;
   }) => {
     useStyles$(styles);
     const tableRef = useSignal(null);
@@ -80,8 +80,12 @@ const Table = component$(
         return;
       }
 
+      if (!props.columns.value?.length) {
+        return;
+      }
+
       const cols = await Promise.all(
-        props.columns.map(async (item) => {
+        (props.columns.value || []).map(async (item) => {
           if (item.field == "actions") {
             const options = item.options || [];
             item.width = item.width || options.length * 90 || 100;
