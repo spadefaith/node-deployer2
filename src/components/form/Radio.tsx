@@ -29,7 +29,7 @@ const Radio = component$(
     const changeHandler = $((e) => {
       const value = getControlValue(e.target);
 
-      let id = String(e.target.value).toLowerCase().replaceAll(" ", "-");
+      const id = String(e.target.value).toLowerCase().replaceAll(" ", "-");
 
       const variantConfig: any = props.variants.find((item) => {
         return item.ref_name == `${e.target.name} - ${value}`;
@@ -56,7 +56,7 @@ const Radio = component$(
         <label class="fs-12 roboto-regular">{props.display}</label>
         <div class={`radio-item-container ${orientation.value}`}>
           {props.options.map((item) => {
-            let id = String(item.value).toLowerCase().replaceAll(" ", "-");
+            const id = String(item.value).toLowerCase().replaceAll(" ", "-");
 
             return (
               <div class="radio-item form-group">
@@ -71,7 +71,7 @@ const Radio = component$(
                   <label for={id}>{item.label}</label>
                 </div>
                 {(variants[id] || []).length ? (
-                  <FormControls data={variants[id]} />
+                  <FormControls controls={variants[id]} />
                 ) : (
                   <></>
                 )}

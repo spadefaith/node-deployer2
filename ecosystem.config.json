@@ -1,0 +1,7 @@
+{
+  "apps": {
+    "name": "app",
+    "script": "npm run serve",
+    "interpreter": "none"
+  }
+}

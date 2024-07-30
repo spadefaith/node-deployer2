@@ -161,7 +161,11 @@ const Select = component$(
         ) : (
           <></>
         )}
-        {variants.value.length ? <FormControls data={variants.value} /> : <></>}
+        {variants.value.length ? (
+          <FormControls controls={variants.value} />
+        ) : (
+          <></>
+        )}
       </div>
     );
   }

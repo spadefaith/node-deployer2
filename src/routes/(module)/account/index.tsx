@@ -25,7 +25,7 @@ import {
 import Lifecycle from "~/server/modules/admin/account/lifecycle";
 import { getFormData } from "~/utils";
 
-const usePagination = server$(async (params) => {
+const getPagination = server$(async (params) => {
   try {
     const datas = await paginate(params);
 
@@ -100,7 +100,7 @@ export const AccountPage = component$((props) => {
   });
 
   const paginateHandler = $((e) => {
-    return usePagination(e);
+    return getPagination(e);
   });
 
   const drawerHandler = $((e) => {
@@ -134,7 +134,9 @@ export const AccountPage = component$((props) => {
             <h3>Add Account</h3>
             <br />
             <form onSubmit$={submitHandler} preventdefault:submit>
-              <FormControls data={meta.value?.components?.form?.add || []} />
+              <FormControls
+                controls={meta.value?.components?.form?.add || []}
+              />
               <br />
               <button type="submit" class="btn btn-dark">
                 Submit

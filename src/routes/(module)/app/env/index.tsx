@@ -27,7 +27,7 @@ import {
 import Lifecycle from "~/server/modules/admin/env/lifecycle";
 import { getFormData } from "~/utils";
 
-const usePagination = server$(async function (params) {
+const getPagination = server$(async function (params) {
   try {
     const datas = await paginate(params);
 
@@ -41,7 +41,7 @@ const usePagination = server$(async function (params) {
   }
 });
 
-export const useCreate = server$(async function (
+export const createRecord = server$(async function (
   data: {
     prop_key: string;
     prop_value: string;
@@ -64,9 +64,11 @@ export const useCreate = server$(async function (
 
 export const useQueryAllEnv = server$(async function () {
   try {
-    let query = {};
+    const query = {};
 
-    for (let [key, value] of this.url.searchParams.entries()) {
+    for (const entries of this.url.searchParams.entries()) {
+      const key = entries[0];
+      const value = entries[1];
       query[key] = value;
     }
 
@@ -78,11 +80,13 @@ export const useQueryAllEnv = server$(async function () {
   }
 });
 
-export const useGetMeta = server$(async function () {
+export const getAppMeta = server$(async function () {
   try {
-    let query = {};
+    const query = {};
 
-    for (let [key, value] of this.url.searchParams.entries()) {
+    for (const entries of this.url.searchParams.entries()) {
+      const key = entries[0];
+      const value = entries[1];
       query[key] = value;
     }
 
@@ -100,7 +104,7 @@ export default component$((props) => {
   const showDrawer = useSignal(false);
 
   useTask$(async () => {
-    meta.value = await useGetMeta();
+    meta.value = await getAppMeta();
 
     columns.value = meta.value?.components?.table?.column || [];
   });
@@ -117,7 +121,7 @@ export default component$((props) => {
     const appId = location.url.searchParams.get("app-id");
     e.app_id = appId;
     console.log(e);
-    return usePagination(e);
+    return getPagination(e);
   });
 
   const drawerHandler = $((e) => {
@@ -149,7 +153,7 @@ export default component$((props) => {
       return accu;
     }, []);
 
-    const resp = (await useCreate(envs)) || {};
+    const resp = (await createRecord(envs)) || {};
 
     console.log(109, resp);
   });

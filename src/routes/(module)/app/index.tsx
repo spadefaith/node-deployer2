@@ -23,7 +23,7 @@ import Lifecycle from "~/server/modules/admin/app/lifecycle";
 import { getFormData } from "~/utils";
 import { downloadLocalFile } from "~/utils/client-utils";
 
-const useLog = server$(async (name) => {
+const getAppLogsCache = server$(async (name) => {
   try {
     const message = await logCache(name);
     console.log(26, message);
@@ -33,7 +33,7 @@ const useLog = server$(async (name) => {
   }
 });
 
-const usePagination = server$(async (params) => {
+const getPagination = server$(async (params) => {
   try {
     const datas = await paginate(params);
 
@@ -47,11 +47,11 @@ const usePagination = server$(async (params) => {
   }
 });
 
-const useGetLogs = server$((name) => {
+const getAppLogs = server$((name) => {
   return getLogs(name);
 });
 
-export const useCreate = server$(async function (data: {
+export const createRecord = server$(async function (data: {
   name?: string;
   provider?: string;
   branch?: string;
@@ -73,7 +73,7 @@ export const useCreate = server$(async function (data: {
   }
 });
 
-export const useEdit = server$(async function (data: {
+export const editRecord = server$(async function (data: {
   name: string;
   provider: string;
   branch: string;
@@ -134,7 +134,7 @@ export const AppPage = component$((props) => {
   });
 
   const paginateHandler = $((e) => {
-    return usePagination(e);
+    return getPagination(e);
   });
 
   const rowActionHandler = $(async (e) => {
@@ -149,7 +149,7 @@ export const AppPage = component$((props) => {
       formControls.value = await selectFormControls(formType.value);
       showDrawer.value = true;
     } else if (action == "logs") {
-      const content = await useGetLogs(data.name);
+      const content = await getAppLogs(data.name);
 
       downloadLocalFile(`${data.name}-logs.txt`, "text/plain", content);
     }
@@ -186,7 +186,7 @@ export const AppPage = component$((props) => {
     );
 
     const { success } =
-      (await useCreate({
+      (await createRecord({
         env: envs,
         ...reg,
       })) || {};
@@ -199,10 +199,10 @@ export const AppPage = component$((props) => {
 
   const submitEditHandler = $(async (e) => {
     const data: any = getFormData(e.target);
-    const { success } = (await useEdit(data)) || {};
+    const { success } = (await editRecord(data)) || {};
 
     const intervalId = setInterval(async () => {
-      const message = await useLog(currentApp.value);
+      const message = await getAppLogsCache(currentApp.value);
       console.log(206, message);
       message && console.log(message);
     }, 1000);

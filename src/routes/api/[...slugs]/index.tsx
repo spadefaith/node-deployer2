@@ -7,13 +7,15 @@ export const onRequest: RequestHandler = async (requestEvent) => {
     // const res = await server.fetch(requestEvent.request);
 
     const loop = (src, target) => {
-      for (let [key, value] of src.entries()) {
+      for (const entries of src.entries()) {
+        const key = entries[0];
+        const value = entries[1];
         target[key] = value;
       }
     };
 
-    let headers = {};
-    let query = {};
+    const headers = {};
+    const query = {};
 
     loop(requestEvent.request.headers, headers);
     loop(requestEvent.url.searchParams, query);

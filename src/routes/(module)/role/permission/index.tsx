@@ -13,7 +13,7 @@ import {
   paginate,
 } from "~/server/modules/admin/role-permission/controller";
 
-const usePagination = server$(async function (params) {
+const getPagination = server$(async function (params) {
   try {
     const datas = await paginate(params);
 
@@ -41,7 +41,7 @@ export default component$((props) => {
     const roleId = location.url.searchParams.get("role-id");
     e.role_id = roleId;
     console.log(e);
-    return usePagination(e);
+    return getPagination(e);
   });
 
   return (

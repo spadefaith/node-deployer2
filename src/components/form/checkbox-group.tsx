@@ -25,7 +25,7 @@ const CheckboxGroup = component$(
     const changeHandler = $((e) => {
       const value = getControlValue(e.target);
 
-      let id = String(e.target.value).toLowerCase().replaceAll(" ", "-");
+      const id = String(e.target.value).toLowerCase().replaceAll(" ", "-");
 
       if (!value) {
         variants[id] = [];
@@ -42,7 +42,7 @@ const CheckboxGroup = component$(
       <div class="checkboxGroup-container">
         <label class="fs-18 roboto-bold">{props.display}</label>
         {props.options.map((item) => {
-          let id = String(item.value).toLowerCase().replaceAll(" ", "-");
+          const id = String(item.value).toLowerCase().replaceAll(" ", "-");
 
           return (
             <div class="checkboxGroup-item form-group">
@@ -60,7 +60,7 @@ const CheckboxGroup = component$(
                 </label>
               </div>
               {(variants[id] || []).length ? (
-                <FormControls data={variants[id]} />
+                <FormControls controls={variants[id]} />
               ) : (
                 <></>
               )}

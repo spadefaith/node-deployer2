@@ -56,6 +56,7 @@ export async function handleRequest(reqOptions: {
     };
 
     // Use the app to handle the request
+    //@ts-ignore;
     server(req, res);
   });
 }

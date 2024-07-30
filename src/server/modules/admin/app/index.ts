@@ -77,7 +77,7 @@ AppAdminModule.get(
 AppAdminModule.get(
 	"/options",
 	async (req,res,next) => {
-		return req.json({ status: 1, data: await options(req.query as any) });
+		return res.json({ status: 1, data: await options(req.query as any) });
 	}
 );
 

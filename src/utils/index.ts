@@ -79,13 +79,17 @@ export const sanitize = (str) =>
 
 export function createUrl(url, params) {
   try {
-    let rawUrl = new URL(url);
+    const rawUrl = new URL(url);
     url = `${rawUrl.origin}${rawUrl.pathname}`;
 
-    for (let [key, value] of rawUrl.searchParams) {
+    for (const entries of rawUrl.searchParams) {
+      const key = entries[0];
+      const value = entries[1];
       params[key] = value;
     }
-  } catch (err) {}
+  } catch (err) {
+    console.log(err);
+  }
 
   const searchParams = new URLSearchParams();
 
@@ -138,7 +142,9 @@ export function searchQueryToObj<T>(str) {
 
   const obj = {};
 
-  for (let [key, value] of urlObj.searchParams.entries()) {
+  for (const entries of urlObj.searchParams.entries()) {
+    const key = entries[0];
+    const value = entries[1];
     obj[key] = value;
   }
 
@@ -181,26 +187,31 @@ export async function Fetch<T>(url, conf = {} as any) {
 }
 
 export const getFormOptions = async function (items, opts?) {
-  let mutateControl = await formControlWalker(cloneObj(items), async (item) => {
-    const { relation, tag } = item;
+  const mutateControl = await formControlWalker(
+    cloneObj(items),
+    async (item) => {
+      const { relation, tag } = item;
 
-    if (relation) {
-      const { path, attributes, defaultValue } = relation;
+      if (relation) {
+        const { path, attributes, defaultValue } = relation;
 
-      const params: any = {};
+        const params: any = {};
 
-      attributes && (params.attributes = attributes);
-      defaultValue && (params.defaultValue = defaultValue);
+        attributes && (params.attributes = attributes);
+        defaultValue && (params.defaultValue = defaultValue);
 
-      const resp = await Fetch(createUrl(`${location.origin}${path}`, params));
+        const resp = await Fetch(
+          createUrl(`${location.origin}${path}`, params)
+        );
 
-      if (resp.status) {
-        item.options = resp.data;
+        if (resp.status) {
+          item.options = resp.data;
+        }
       }
-    }
 
-    return item;
-  });
+      return item;
+    }
+  );
 
   return formControlWalker(mutateControl, async (item) => {
     return item;
@@ -282,11 +293,11 @@ export const cloneObj = (obj) => {
 };
 
 export function sortedQueryString(object) {
-  let keys = Object.keys(object);
-  let sorted = keys.sort();
+  const keys = Object.keys(object);
+  const sorted = keys.sort();
   let string = "";
   sorted.forEach((key, index) => {
-    let value = object[key];
+    const value = object[key];
     if (value) {
       if (index == sorted.length - 1) {
         string += `${key}=${value}`;
