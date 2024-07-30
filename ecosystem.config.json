@@ -1,6 +1,6 @@
 {
   "apps": {
-    "name": "app",
+    "name": "deployer",
     "script": "npm run serve",
     "interpreter": "none"
   }
