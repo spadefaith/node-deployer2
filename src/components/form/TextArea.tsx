@@ -1,5 +1,5 @@
 import { component$ } from "@builder.io/qwik";
-import { mergeTo } from "~/utils";
+import { mergeTo } from "~/utils/client-utils";
 
 const TextArea = component$(
   (props: {

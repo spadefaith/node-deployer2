@@ -20,7 +20,7 @@ import {
   update,
 } from "~/server/modules/admin/app/controller";
 import Lifecycle from "~/server/modules/admin/app/lifecycle";
-import { getFormData } from "~/utils";
+import { getFormData } from "~/utils/client-utils";
 import { downloadLocalFile } from "~/utils/client-utils";
 
 const getAppLogsCache = server$(async (name) => {
@@ -50,6 +50,8 @@ const getPagination = server$(async (params) => {
 const getAppLogs = server$((name) => {
   return getLogs(name);
 });
+
+export const metaServer = server$(() => getMeta());
 
 export const createRecord = server$(async function (data: {
   name?: string;
@@ -116,7 +118,7 @@ export const AppPage = component$((props) => {
   });
 
   useTask$(async () => {
-    meta.value = await getMeta();
+    meta.value = await metaServer();
 
     columns.value = meta.value?.components?.table?.column || [];
 

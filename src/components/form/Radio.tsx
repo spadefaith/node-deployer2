@@ -7,7 +7,7 @@ import {
   useVisibleTask$,
 } from "@builder.io/qwik";
 import styles from "./radio.scss?inline";
-import { getControlValue, restructureControls } from "~/utils";
+import { getControlValue, restructureControls } from "~/utils/client-utils";
 import FormControls from "./FormControls";
 const Radio = component$(
   (props: {

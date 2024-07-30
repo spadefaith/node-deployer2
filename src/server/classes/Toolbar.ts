@@ -1,4 +1,4 @@
-import { mergeTo } from "../utils";
+import { mergeTo } from "~/utils/client-utils";
 import Models from "../db";
 
 type SidebarItemType = {

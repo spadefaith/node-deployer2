@@ -23,7 +23,7 @@ import {
   paginate,
 } from "~/server/modules/admin/role/controller";
 import Lifecycle from "~/server/modules/admin/role/lifecycle";
-import { getFormData } from "~/utils";
+import { getFormData } from "~/utils/client-utils";
 
 const getPagination = server$(async (params) => {
   try {
@@ -39,43 +39,36 @@ const getPagination = server$(async (params) => {
   }
 });
 
-export const useCreate = routeAction$(
-  async (
-    data: {
-      name: string;
-      description: string;
-    },
-    { cookie, redirect, url }
-  ) => {
-    try {
-      const lifecycle = new Lifecycle({});
-      await lifecycle.parseQwikCookies(data, cookie);
+export const createRecord = server$(async function (data: {
+  name: string;
+  description: string;
+}) {
+  try {
+    const lifecycle = new Lifecycle({});
+    await lifecycle.parseQwikCookies(data, this.cookie);
 
-      console.log(58, data);
+    console.log(58, data);
 
-      const created = await create(lifecycle);
+    const created = await create(lifecycle);
 
-      return { success: true };
-    } catch (err) {
-      console.log(64, err);
-      return { success: false, message: err.message };
-    }
-  },
-  zod$({
-    name: z.string(),
-    description: z.string(),
-  })
-);
+    return { success: true };
+  } catch (err) {
+    console.log(64, err);
+    return { success: false, message: err.message };
+  }
+});
+
+export const metaServer = server$(() => getMeta());
 
 export const AccountPage = component$((props) => {
   const columns = useSignal([]);
   const nav = useNavigate();
   const meta = useSignal([] as any);
   const showDrawer = useSignal(false);
-  const actionCreate = useCreate();
+
   const tabContext = useContext(TabContext);
   useTask$(async () => {
-    meta.value = await getMeta();
+    meta.value = await metaServer();
 
     columns.value = meta.value?.components?.table?.column || [];
   });
@@ -106,10 +99,8 @@ export const AccountPage = component$((props) => {
   });
 
   const submitHandler = $(async (e) => {
-    const data = getFormData(e.target);
-    const {
-      value: { success },
-    } = (await actionCreate.submit(data)) || {};
+    const data: any = getFormData(e.target);
+    const { success } = await createRecord(data);
 
     console.log(109, success);
   });

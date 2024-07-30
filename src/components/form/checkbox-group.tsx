@@ -6,7 +6,7 @@ import {
   useStyles$,
 } from "@builder.io/qwik";
 import styles from "./checkbox-group.scss?inline";
-import { getControlValue, restructureControls } from "~/utils";
+import { getControlValue, restructureControls } from "~/utils/client-utils";
 import FormControls from "./FormControls";
 const CheckboxGroup = component$(
   (props: {

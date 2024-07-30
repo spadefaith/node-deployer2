@@ -9,7 +9,7 @@ import {
 } from "@builder.io/qwik-city";
 import { login } from "~/server/modules/admin/auth/controller";
 import { request } from "http";
-import { getFormData } from "~/utils";
+import { getFormData } from "~/utils/client-utils";
 import { isServer } from "@builder.io/qwik/build";
 import CacheServerService from "~/services/CacheServerService";
 import moment from "moment";

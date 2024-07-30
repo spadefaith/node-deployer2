@@ -1,6 +1,6 @@
 import { $, component$, useSignal, useStyles$ } from "@builder.io/qwik";
 import Input from "./Input";
-import { getFormData, initGlobal } from "~/utils";
+import { getFormData, initGlobal } from "~/utils/client-utils";
 
 import styles from "./input-key-value.scss?inline";
 import { HelpType } from "~/server/classes/Form";

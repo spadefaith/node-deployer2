@@ -25,7 +25,7 @@ import {
   paginate,
 } from "~/server/modules/admin/env/controller";
 import Lifecycle from "~/server/modules/admin/env/lifecycle";
-import { getFormData } from "~/utils";
+import { getFormData } from "~/utils/client-utils";
 
 const getPagination = server$(async function (params) {
   try {

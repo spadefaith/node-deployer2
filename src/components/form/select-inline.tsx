@@ -8,7 +8,12 @@ import {
 } from "@builder.io/qwik";
 import { Drawer } from "../drawer";
 import FormControls from "./FormControls";
-import { initGlobal, mergeTo, parseMedia, restructureControls } from "~/utils";
+import {
+  initGlobal,
+  mergeTo,
+  parseMedia,
+  restructureControls,
+} from "~/utils/client-utils";
 import styles from "./select-inline.scss?inline";
 import { isServer } from "@builder.io/qwik/build";
 

@@ -11,7 +11,7 @@ import TextArea from "./TextArea";
 import Select from "./Select";
 import FormControlGroup from "./FormControlGroup";
 import Datalist from "./Datalist";
-import { restructureControls } from "~/utils";
+import { restructureControls } from "~/utils/client-utils";
 import Radio from "./Radio";
 import InputKeyValue from "./input-key-value";
 import CheckboxGroup from "./checkbox-group";

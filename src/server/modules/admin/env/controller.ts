@@ -3,7 +3,7 @@ import Models from '~/server/db';
 import { getPk } from '../../../utils';
 import meta from './meta/meta';
 import Lifecycle from './lifecycle';
-import { mergeTo } from '~/utils';
+import { mergeTo } from '~/utils/client-utils';
 import addForm from './meta/add-form';
 
 const pk = getPk(Models.Envs);

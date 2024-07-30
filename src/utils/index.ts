@@ -23,60 +23,6 @@ export const momentToCron = (moment: Moment) => {
   return `${moment.minute()} ${moment.hour()} ${moment.date()} ${moment.month() + 1} *`;
 };
 
-export function getFormData<T>(
-  form: HTMLFormElement,
-  opts?: { trim?: boolean; json?: boolean }
-): T {
-  const o = {
-    trim: false,
-    json: true,
-  };
-  if (opts && opts.trim != undefined) {
-    o.trim = opts.trim;
-  }
-
-  if (opts && opts.json != undefined) {
-    o.json = opts.json;
-  }
-
-  const formData = new FormData(form);
-  const data: any = {};
-  const isTrim = o.trim;
-
-  [...form.elements].forEach((item: any) => {
-    const value = sanitize(item["value"]);
-    if (item["name"]) {
-      if (item["type"] == "checkbox") {
-        item["checked"] && (data[item["name"]] = item["checked"]);
-      } else if (item["type"] == "file") {
-        console.log(item["files"]);
-        data[item["name"]] = item["files"][0];
-      } else if (isTrim && value != "") {
-        data[item["name"]] = value;
-      } else if (!isTrim) {
-        data[item["name"]] = value;
-      }
-    }
-  });
-
-  delete data.PreventChromeAutocomplete;
-
-  if (o.json == false) {
-    Object.keys(data).forEach((key) => {
-      if (!formData.has(key)) {
-        formData.append(key, data[key]);
-      }
-    });
-
-    return formData as T;
-  }
-
-  return data as T;
-}
-
-export const sanitize = (str) =>
-  decodeURIComponent(String(str).replace(/<.*>/, ""));
-
 export function createUrl(url, params) {
   try {
     const rawUrl = new URL(url);
@@ -107,32 +53,6 @@ export function createUrl(url, params) {
     return `${url}?${searchParams.toString()}`;
   }
   return searchParams.toString();
-}
-
-export const mergeTo = (value, obj) => {
-  if (isFalsy(value)) {
-    return {};
-  }
-
-  return obj || {};
-};
-
-export function isFalsy(val, len?) {
-  if (!val) {
-    return true;
-  }
-  const isNumber = val.constructor.name == "Number";
-  const isString = val.constructor.name == "String";
-
-  if (isNumber) {
-    return !val;
-  } else if (isString) {
-    if (len) {
-      return val == "undefined" || val == "null" || val.length <= len;
-    }
-    return val == "undefined" || val == "null";
-  }
-  return false;
 }
 
 export function searchQueryToObj<T>(str) {
@@ -309,70 +229,3 @@ export function sortedQueryString(object) {
 
   return string;
 }
-
-export const initGlobal = <T>(name, value?) => {
-  if (isServer) {
-    return;
-  }
-
-  if (value) {
-    window[name] = value;
-  }
-  return window[name] as T;
-};
-
-export const getControlValue = (control) => {
-  let value = sanitize(control["value"]);
-  if (control["type"] == "checkbox") {
-    if (!control["checked"]) {
-      value = null;
-    }
-  } else if (control["type"] == "file") {
-    value = control["files"][0];
-  }
-
-  return value;
-};
-
-export const restructureControls = (data, update?) => {
-  return data.map((item) => {
-    item.properties.forEach(({ key, value }) => {
-      item[key] = value;
-    });
-
-    if (update && update[item.name]) {
-      item.value = update[item.name];
-    }
-
-    return item;
-  });
-};
-
-export const parseMedia = (obj) => {
-  //   {
-  //     "data": {
-  //         "id": 9,
-  //         "attributes": {
-  //             "name": "Subtract.svg",
-  //             "alternativeText": null,
-  //             "caption": null,
-  //             "width": 20,
-  //             "height": 20,
-  //             "formats": null,
-  //             "hash": "Subtract_e89567f449",
-  //             "ext": ".svg",
-  //             "mime": "image/svg+xml",
-  //             "size": 0.34,
-  //             "url": "/uploads/Subtract_e89567f449.svg",
-  //             "previewUrl": null,
-  //             "provider": "local",
-  //             "provider_metadata": null,
-  //             "createdAt": "2024-07-11T11:14:09.716Z",
-  //             "updatedAt": "2024-07-11T11:14:20.990Z"
-  //         }
-  //     }
-  // }
-  const data = obj?.data;
-
-  return data;
-};

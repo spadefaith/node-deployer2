@@ -23,7 +23,7 @@ import {
   paginate,
 } from "~/server/modules/admin/account/controller";
 import Lifecycle from "~/server/modules/admin/account/lifecycle";
-import { getFormData } from "~/utils";
+import { getFormData } from "~/utils/client-utils";
 
 const getPagination = server$(async (params) => {
   try {
@@ -39,57 +39,41 @@ const getPagination = server$(async (params) => {
   }
 });
 
-export const useCreate = routeAction$(
-  async (
-    data: {
-      username: string;
-      password: string;
-      email: string;
-      first_name: string;
-      last_name: string;
-      role_id: string;
-    },
-    { cookie, redirect, url }
-  ) => {
-    try {
-      const lifecycle = new Lifecycle({});
-      await lifecycle.parseQwikCookies(data, cookie);
+export const createRecord = server$(async function (data: {
+  username: string;
+  password: string;
+  email: string;
+  first_name: string;
+  last_name: string;
+  role_id: string;
+}) {
+  try {
+    const lifecycle = new Lifecycle({});
+    await lifecycle.parseQwikCookies(data, this.cookie);
 
-      console.log(58, data);
+    console.log(58, data);
 
-      const created = await create(lifecycle);
+    const created = await create(lifecycle);
 
-      return { success: true };
-    } catch (err) {
-      console.log(64, err);
-      return { success: false, message: err.message };
-    }
-  },
-  zod$({
-    username: z.string(),
-    email: z.string(),
-    password: z.string(),
-    first_name: z.string(),
-    last_name: z.string(),
-    role_id: z.string(),
-  })
-);
+    return { success: true };
+  } catch (err) {
+    console.log(64, err);
+    return { success: false, message: err.message };
+  }
+});
+
+export const metaServer = server$(() => getMeta());
 
 export const AccountPage = component$((props) => {
   const columns = useSignal([]);
   const meta = useSignal([] as any);
   const tabContext = useContext(TabContext);
   const showDrawer = useSignal(false);
-  const actionCreate = useCreate();
 
   useTask$(async () => {
-    meta.value = await getMeta();
+    meta.value = await metaServer();
 
     columns.value = meta.value?.components?.table?.column || [];
-  });
-
-  useVisibleTask$(() => {
-    console.log(38, meta.value);
   });
 
   useVisibleTask$(({ track }) => {
@@ -111,10 +95,8 @@ export const AccountPage = component$((props) => {
   });
 
   const submitHandler = $(async (e) => {
-    const data = getFormData(e.target);
-    const {
-      value: { success },
-    } = (await actionCreate.submit(data)) || {};
+    const data: any = getFormData(e.target);
+    const { success } = await createRecord(data);
 
     console.log(109, success);
   });

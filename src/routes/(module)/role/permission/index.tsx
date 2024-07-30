@@ -27,12 +27,14 @@ const getPagination = server$(async function (params) {
   }
 });
 
+export const metaServer = server$(() => getMeta());
+
 export default component$((props) => {
   const columns = useSignal([]);
   const location = useLocation();
 
   useTask$(async () => {
-    const meta = await getMeta();
+    const meta = await metaServer();
 
     columns.value = meta?.components?.table?.column || [];
   });

@@ -9,7 +9,7 @@ import {
   useVisibleTask$,
 } from "@builder.io/qwik";
 import FormControls from "./FormControls";
-import { initGlobal, parseMedia, restructureControls } from "~/utils";
+
 // import styles from "./select.scss?inline";
 import { isServer } from "@builder.io/qwik/build";
 

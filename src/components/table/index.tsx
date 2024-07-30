@@ -11,7 +11,7 @@ import styles from "./table.scss?inline";
 import { isServer } from "@builder.io/qwik/build";
 import { icons, tableSettings } from "~/consts/table";
 import { Tabulator } from "~/consts/lib";
-import { initGlobal } from "~/utils";
+import { initGlobal } from "~/utils/client-utils";
 import { TableContext } from "~/root";
 const Table = component$(
   (props: {
