@@ -11,6 +11,10 @@ import { login } from "~/server/modules/admin/auth/controller";
 import { request } from "http";
 import { getFormData } from "~/utils";
 import { isServer } from "@builder.io/qwik/build";
+import CacheServerService from "~/services/CacheServerService";
+import moment from "moment";
+
+const _cache = new CacheServerService("auth");
 
 export const useLogin = routeAction$(
   async (
@@ -18,10 +22,41 @@ export const useLogin = routeAction$(
     { cookie, redirect, url }
   ) => {
     try {
+      const get = await _cache.getStore(creds.username, true);
+      const expiration = moment().add(3, "hours").format("YYYY-MM-DD HH:mm:ss");
+
+      if (!get) {
+        await _cache.setStore(creds.username, {
+          retry: 1,
+          expired: expiration,
+        });
+      } else {
+        const { retry, expired } = get;
+        const retryN = Number(retry);
+        const isExpired = moment().isAfter(moment(expired));
+
+        if (retryN + 1 > 3) {
+          if (isExpired) {
+            await _cache.setStore(creds.username, {
+              retry: 1,
+              expired: expiration,
+            });
+          } else {
+            throw new Error("disable login");
+          }
+        } else {
+          await _cache.setStore(creds.username, {
+            retry: retryN + 1,
+            expired: get.expired,
+          });
+        }
+      }
+
       const token = await login(creds);
-      console.log(14, token);
 
       cookie.set("x-token", token, { secure: false, httpOnly: true });
+
+      await _cache.destroyStore(creds.username);
 
       return { success: true, redirect: new URL("/account", url).toString() };
     } catch (err) {
