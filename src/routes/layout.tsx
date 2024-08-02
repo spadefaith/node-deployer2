@@ -10,7 +10,10 @@ import type { RequestHandler } from "@builder.io/qwik-city";
 import styles from "./layout.scss?inline";
 import Sidebar from "~/components/sidebar";
 import { Toolbar } from "~/components/toolbar";
-import { getSidebar } from "~/server/modules/admin/account/controller";
+import {
+  getSidebar,
+  getToolbar,
+} from "~/server/modules/admin/role-permission/controller";
 export const onGet: RequestHandler = async ({ cacheControl }) => {
   // Control caching for this request for best performance and to reduce hosting costs:
   // https://qwik.dev/docs/caching/
@@ -25,7 +28,9 @@ export const onGet: RequestHandler = async ({ cacheControl }) => {
 export default component$(() => {
   useStyles$(styles);
   const sidebar = useSignal([]);
+  const toolbar = useSignal([]);
   useTask$(async () => {
+    toolbar.value = await getToolbar({ role_id: 1 });
     sidebar.value = await getSidebar({ role_id: 1 });
   });
 
@@ -35,9 +40,13 @@ export default component$(() => {
         <div class="sidebar">
           <Sidebar items={sidebar.value} />
         </div>
-        <div class="header">
-          <Toolbar />
-        </div>
+        {toolbar?.value?.length ? (
+          <div class="header">
+            <Toolbar items={toolbar.value} />
+          </div>
+        ) : (
+          <></>
+        )}
         <div class="main">
           <Slot />
         </div>

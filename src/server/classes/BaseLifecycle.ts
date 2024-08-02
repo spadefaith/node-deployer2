@@ -26,5 +26,7 @@ export default class BaseLifecycle {
 
 
 		this.admin = await verifyToken(token.value);
+
+		return token;
 	}
 }

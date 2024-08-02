@@ -13,6 +13,7 @@ import Table from "~/components/table";
 import { TabContext } from "~/root";
 import {
   create,
+  deployApplication,
   getLogs,
   getMeta,
   logCache,
@@ -26,7 +27,7 @@ import { downloadLocalFile } from "~/utils/client-utils";
 const getAppLogsCache = server$(async (name) => {
   try {
     const message = await logCache(name);
-    console.log(26, message);
+
     return message;
   } catch (err) {
     console.log(30, err);
@@ -85,8 +86,6 @@ export const editRecord = server$(async function (data: {
     const lifecycle = new Lifecycle({});
     await lifecycle.parseQwikCookies(data, this.cookie);
 
-    console.log(58, data);
-
     const created = await update(lifecycle);
 
     return { success: true };
@@ -94,6 +93,13 @@ export const editRecord = server$(async function (data: {
     console.log(64, err);
     return { success: false, message: err.message };
   }
+});
+
+export const deploy = server$(async function (app_id) {
+  const lifecycle = new Lifecycle({});
+  await lifecycle.parseQwikCookies({}, this.cookie);
+
+  await deployApplication(app_id);
 });
 
 export const AppPage = component$((props) => {
@@ -141,19 +147,32 @@ export const AppPage = component$((props) => {
 
   const rowActionHandler = $(async (e) => {
     const { data, action } = e;
+    currentApp.value = data.name;
 
+    console.log(152, e, action == "proxy");
     if (action == "add_env") {
       window.location.href = `/app/env?app-id=${data.app_id}`;
     } else if (action == "edit") {
       formType.value = "edit";
       editData.value = data;
-      currentApp.value = data.name;
+
       formControls.value = await selectFormControls(formType.value);
       showDrawer.value = true;
     } else if (action == "logs") {
       const content = await getAppLogs(data.name);
 
       downloadLocalFile(`${data.name}-logs.txt`, "text/plain", content);
+    } else if (action == "deploy") {
+      deploy(data.app_id);
+
+      const intervalId = setInterval(async () => {
+        const message = await getAppLogsCache(currentApp.value);
+        message && console.log(message);
+      }, 1000);
+
+      setTimeout(() => clearInterval(intervalId), 120000);
+    } else if (action == "proxy") {
+      window.location.href = `/app/proxy?app-id=${data.app_id}`;
     }
   });
 
@@ -202,14 +221,6 @@ export const AppPage = component$((props) => {
   const submitEditHandler = $(async (e) => {
     const data: any = getFormData(e.target);
     const { success } = (await editRecord(data)) || {};
-
-    const intervalId = setInterval(async () => {
-      const message = await getAppLogsCache(currentApp.value);
-      console.log(206, message);
-      message && console.log(message);
-    }, 1000);
-
-    setTimeout(() => clearInterval(intervalId), 20000);
 
     if (success) {
       isReload.value = true;

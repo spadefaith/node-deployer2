@@ -28,10 +28,12 @@ module.exports = function (Sequelize, DataTypes) {
       branch: {
         type: DataTypes.STRING(50),
       },
-      name: {
-        type: DataTypes.STRING(50),
+      name: DataTypes.STRING(50),
+      old_name: DataTypes.STRING(50),
+      domain: {
+        type: DataTypes.STRING(100),
+        unique: true,
       },
-
       category: {
         type: DataTypes.STRING,
         allowNull: true,

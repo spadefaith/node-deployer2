@@ -11,6 +11,8 @@ export interface AppsAttributes {
   repo?: string;
   branch?: string;
   name?: string;
+  old_name?: string;
+  domain?: string;
   category?: string;
   status: string;
   created_by: string;
@@ -22,7 +24,7 @@ export interface AppsAttributes {
 
 export type AppsPk = "app_id";
 export type AppsId = Apps[AppsPk];
-export type AppsOptionalAttributes = "webhook_url" | "compose_path" | "root_path" | "provider" | "repo" | "branch" | "name" | "category" | "status" | "created_by" | "modified_by" | "hooked_date" | "created_date" | "updated_date";
+export type AppsOptionalAttributes = "webhook_url" | "compose_path" | "root_path" | "provider" | "repo" | "branch" | "name" | "old_name" | "domain" | "category" | "status" | "created_by" | "modified_by" | "hooked_date" | "created_date" | "updated_date";
 export type AppsCreationAttributes = Optional<AppsAttributes, AppsOptionalAttributes>;
 
 export class Apps extends Model<AppsAttributes, AppsCreationAttributes> implements AppsAttributes {
@@ -34,6 +36,8 @@ export class Apps extends Model<AppsAttributes, AppsCreationAttributes> implemen
   repo?: string;
   branch?: string;
   name?: string;
+  old_name?: string;
+  domain?: string;
   category?: string;
   status!: string;
   created_by!: string;
@@ -93,6 +97,15 @@ export class Apps extends Model<AppsAttributes, AppsCreationAttributes> implemen
       type: DataTypes.STRING(50),
       allowNull: true
     },
+    old_name: {
+      type: DataTypes.STRING(50),
+      allowNull: true
+    },
+    domain: {
+      type: DataTypes.STRING(100),
+      allowNull: true,
+      unique: "domain"
+    },
     category: {
       type: DataTypes.STRING(255),
       allowNull: true
@@ -137,6 +150,14 @@ export class Apps extends Model<AppsAttributes, AppsCreationAttributes> implemen
         using: "BTREE",
         fields: [
           { name: "app_id" },
+        ]
+      },
+      {
+        name: "domain",
+        unique: true,
+        using: "BTREE",
+        fields: [
+          { name: "domain" },
         ]
       },
       {

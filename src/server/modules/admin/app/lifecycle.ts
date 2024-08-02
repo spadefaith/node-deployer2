@@ -1,18 +1,14 @@
 import 'dotenv/config';
 import bcrypt from 'bcryptjs';
 import path from 'node:path';
-import fs from 'fs';
 import BaseLifecycle from '~/server/classes/BaseLifecycle';
 import Models from '~/server/db';
 import {randomUUID} from 'node:crypto';
-import workerpool from 'workerpool';
 import Docker from 'dockerode';
 import { AppsCreationAttributes } from '~/server/db/typed-models/Apps';
-import { logCache } from './controller';
-
+import { removeContainer } from './utils';
 
 const PWD = process.env.PWD;
-const pool = workerpool.pool(path.join(PWD, 'deploy.js'));
 
 type DataType = {
 	first_name: string;
@@ -75,8 +71,6 @@ export default class Lifecycle extends BaseLifecycle {
 	}
 	async afterCreate(props: { mutate: any, env: any, data:any }) {
 		const { root_path, repo, branch, name } = props.data;
-
-
 		/**
 		 * delete all env if found;
 		 */
@@ -100,92 +94,46 @@ export default class Lifecycle extends BaseLifecycle {
 
 		await Models.Envs.bulkCreate(envs)
 
-		await new Promise((res, rej) => {
-			let error;
-	
-			process.chdir(PWD);
-			pool
-				.exec('deploy', [
-					{
-						root_path,
-						branch,
-						repo,
-						name,
-						envs:props.env
-					}
-				],{
-					on: function (payload) {
-						logCache(name, payload.message.toString());
-					},
-				})
-				.then(function (result) {
-					console.log('Result: ' + result); // outputs 55
-				})
-				.catch(function (err) {
-					error = err.message;
-				})
-				.then(function () {
-					pool.terminate(); // terminate all workers when done
-					if (error) {
-						rej(error);
-					} else {
-						res(true);
-					}
-				});
-		});
 
 		return true;
 	}
-	async beforeDelete(props: { data: { account_id } }) {}
+	async beforeDelete (props: { app_id: number })  {
+
+	
+	
+	};
 	async beforeUpdate(props: { data: DataType & { modified_by: number } }) {
-		props.data.password = bcrypt.hashSync(props.data.password, bcrypt.genSaltSync(10));
 
-		props.data.modified_by = this.admin.account_id;
 
-		return props.data;
 	}
 	async afterUpdate(props: { data: AppsCreationAttributes , app: AppsCreationAttributes}) {
-		const envs = (await Models.Envs.findAll({raw:true,where:{app_id:props.app.app_id}})).reduce((accu,item)=>{
 
-			accu[item.prop_key] = item.prop_value;
 
-			return accu;
-		},{});
+		const newName = props.data.name;
+		const oldName = props.app.name;
 
-		process.chdir(PWD);
-		
-		await new Promise((res, rej) => {
-			let error;
-	
+		if(newName == oldName){
+			return;
+		}
 
-			pool
-				.exec('deploy', [
-					{
-						root_path:props.app.root_path,
-						branch:props.app.branch,
-						repo:props.app.repo,
-						name:props.app.name,
-						envs
-					}
-				],{
-					on: function (payload) {
-						logCache(props.app.name, payload.message.toString());
-					},
-				})
-				.then(function (result) {
-					console.log('Result: ' + result); // outputs 55
-				})
-				.catch(function (err) {
-					error = err.message;
-				})
-				.then(function () {
-					pool.terminate(); // terminate all workers when done
-					if (error) {
-						rej(error);
-					} else {
-						res(true);
-					}
-				});
+		/**
+		 * create new root_path from new name;
+		 */
+		const root_path = path.join(PWD, "../apps", `${newName}`);
+
+
+		await Models.Apps.update({root_path, compose_path:root_path}, {
+			where: {
+				app_id: props.app.app_id
+			}
 		});
+
+		/**
+		 * remove old container from old name;
+		 */
+		await removeContainer(oldName);
+
+
+
 	}
 }

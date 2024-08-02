@@ -4,7 +4,7 @@
     display: grid;
     grid-template-areas: "sidebar header" "sidebar main";
     grid-template-columns: 300px calc(100vw - 300px);
-    grid-template-rows: 75px 1fr;
+    grid-template-rows: max-content 1fr;
 
     .sidebar {
       grid-area: sidebar;

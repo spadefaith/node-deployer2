@@ -78,6 +78,19 @@ FormConstructor.createControl({
   }],
 });
 
+//domain
+FormConstructor.createControl({
+  tag:'input',
+  ref_name:'domain',
+  display:'Domain',
+  properties:[{
+    key:"name", value:"domain"
+  },{
+    key:"type", value:"text"
+  },{
+    key:"validator", value:"required=true"
+  }],
+});
 
 //env_group
 FormConstructor.createControl({
@@ -91,4 +104,4 @@ FormConstructor.createControl({
 
 
 
-export default FormConstructor.getControls(["name","provider","repo","branch","env_group"]);
+export default FormConstructor.getControls(["name","provider","repo","branch","domain","env_group"]);

@@ -2,6 +2,7 @@ export default [
 	{ title: 'ID', field: 'app_id', visible: true },
 	{ title: 'Name', field: 'name', visible: true },
 	{ title: 'Branch', field: 'branch', visible: true },
+	{ title: 'Domain', field: 'domain', visible: true },
 	{
 		title: 'Repo',
 		field: 'repo',
@@ -11,7 +12,6 @@ export default [
 		variableHeight: true,
 		formatter: 'textarea'
 	},
-
 	{
 		title: 'Hook Url',
 		field: 'webhook_url',
@@ -27,8 +27,9 @@ export default [
 		title: 'Actions',
 		visible: true,
 		options: [
+			{ value: 'proxy', label: 'Proxy' },
 			{ value: 'logs', label: 'Logs' },
-			{ value: 'redeploy', label: 'Restart' },
+			{ value: 'deploy', label: 'Deploy' },
 			{ value: 'add_env', label: 'Env' },
 			{ value: 'edit', label: 'Update' },
 			{ value: 'delete', label: 'Delete' }

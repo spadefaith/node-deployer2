@@ -50,6 +50,21 @@ FormConstructor.createControl({
     key:"validator", value:"required=true"
   }],
 });
+
+//domain
+FormConstructor.createControl({
+  tag:'input',
+  ref_name:'domain',
+  display:'Domain',
+  properties:[{
+    key:"name", value:"domain"
+  },{
+    key:"type", value:"text"
+  },{
+    key:"validator", value:"required=true"
+  }],
+});
+
 //branch
 FormConstructor.createControl({
   tag:'input',
@@ -79,7 +94,6 @@ FormConstructor.createControl({
   }],
 });
 
-
 //env_group
 FormConstructor.createControl({
   tag:'group',
@@ -87,8 +101,6 @@ FormConstructor.createControl({
   display:'Environment Variable',
   children:FormConstructor.getControls(["env"])
 });
-
-
 
 //app_id
 FormConstructor.createControl({
@@ -105,4 +117,4 @@ FormConstructor.createControl({
 });
 
 
-export default FormConstructor.getControls(["name","provider","repo","branch","app_id"]);
+export default FormConstructor.getControls(["name","provider","repo","branch","domain","app_id"]);

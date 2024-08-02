@@ -5,6 +5,7 @@ import { getPk } from '../../../utils';
 import meta from './meta/meta';
 import Lifecycle from './lifecycle';
 import fs from 'fs';
+import { deployContainer } from './utils';
 const PWD = process.env.PWD;
 
 const pk = getPk(Models.Apps);
@@ -29,7 +30,7 @@ export const bulkCreate = async (payload) => {
 };
 
 export const update = async (lifecycle: Lifecycle) => {
-	const payload = lifecycle.body;
+	const payload: any = lifecycle.body;
 
 	if (payload[pk] == undefined) {
 		throw new Error(`${pk} is undefined`);
@@ -50,6 +51,7 @@ export const update = async (lifecycle: Lifecycle) => {
 		throw new Error('app is not existed');
 	};
 
+	payload.old_name = find.name;
 
 	await Models.Apps.update(payload, {
 		where: {
@@ -57,8 +59,10 @@ export const update = async (lifecycle: Lifecycle) => {
 		}
 	});
 
+
+
 	lifecycle.afterUpdate({
-		...{
+		data:{
 			...payload,
 			[pk]:pkv
 		},
@@ -188,4 +192,14 @@ export const getLogs = (name)=>{
 	console.log(189,content);
 
 	return content;
+}
+
+export const deployApplication = async (app_id)=>{
+	if(!app_id){
+		throw new Error('app_id is required');
+	}
+
+
+
+	await deployContainer(app_id);
 }

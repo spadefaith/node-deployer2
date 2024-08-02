@@ -1,7 +1,7 @@
 import { $, component$, useContext, useStyles$ } from "@builder.io/qwik";
 import styles from "./toolbar.scss?inline";
 import { TabContext } from "~/root";
-export const Toolbar = component$((props) => {
+export const Toolbar = component$((props: { items: any[] }) => {
   useStyles$(styles);
 
   const tabContext = useContext(TabContext);
@@ -17,24 +17,23 @@ export const Toolbar = component$((props) => {
   return (
     <div class="toolbar-content">
       <div class="action-container">
-        <button
-          type="button"
-          class="btn btn-dark"
-          data-mdb-ripple-init
-          data-mdb-ripple-color="dark"
-          onClick$={clickHandler}
-        >
-          Add
-        </button>
-        &nbsp;
-        <button
-          type="button"
-          class="btn btn-dark"
-          data-mdb-ripple-init
-          data-mdb-ripple-color="dark"
-        >
-          Download
-        </button>
+        {props.items.map((item) => {
+          return (
+            <>
+              <button
+                type="button"
+                class="btn btn-dark"
+                data-mdb-ripple-init
+                data-mdb-ripple-color="dark"
+                onClick$={clickHandler}
+                data-action={item.ref_name}
+              >
+                {item.display}
+              </button>
+              &nbsp;
+            </>
+          );
+        })}
       </div>
     </div>
   );

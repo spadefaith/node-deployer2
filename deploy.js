@@ -2,7 +2,7 @@ import shell from "shelljs";
 import fs from "node:fs";
 import workerpool from "workerpool";
 import { exec, spawn } from "child_process";
-
+import path from "node:path";
 const PWD = process.env.PWD;
 
 export const log = (name, message) => {
@@ -32,25 +32,63 @@ export const toEnv = (obj) => {
 
   return joined;
 };
+
+export const removeLogFile = (name) => {
+  const logFile = `${PWD}/logs/${name}.txt`;
+  console.log(41, logFile);
+  fs.existsSync(logFile) && fs.unlinkSync(logFile);
+};
+
+export const changePath = (path) => {
+  shell.exec(`cd ${path}`);
+};
+
+async function runScript(script, ar, opts, stdoutCallback, stderrCallback) {
+  console.log(43, script, ar || [], {
+    shell: true,
+    stdio: ["inherit"],
+    encoding: "utf-8",
+    ...(opts || {}),
+  });
+  return await new Promise((resolve, reject) => {
+    const child = spawn(script, ar || [], {
+      shell: true,
+      stdio: ["inherit"],
+      encoding: "utf-8",
+      ...(opts || {}),
+    });
+    child.stdout.on("data", async (data) => {
+      data = data.toString();
+      stdoutCallback(data);
+    });
+    child.stderr.on("data", async (data) => {
+      data = data.toString();
+      stderrCallback(data);
+    });
+    child.on("close", async (code) => {
+      // console.log(output);
+      resolve({ code });
+    });
+  });
+}
+
 async function deploy(props) {
   try {
     const { root_path, branch, repo, envs, name } = props || {};
 
-    const logFile = `${PWD}/logs/${name}.txt`;
+    console.log(69, props);
 
-    console.log(41, logFile);
     /**
      * remove dir
      */
     fs.rmSync(root_path, { recursive: true, force: true });
     fs.mkdirSync(root_path, { recursive: true });
-    fs.unlinkSync(logFile);
+    removeLogFile(name);
 
     const content = await toEnv(envs);
     /**
      * deploy
      */
-    shell.cd(root_path);
     // const clone = await shell.exec(
     //   `git clone --branch=${branch} ${repo} ${root_path} `
     // );
@@ -58,7 +96,9 @@ async function deploy(props) {
     const clone = await runScript(
       `git clone --branch=${branch} ${repo} ${root_path} `,
       [],
-      {},
+      {
+        cwd: root_path,
+      },
       (d) =>
         workerpool.workerEmit({
           message: d,
@@ -69,10 +109,12 @@ async function deploy(props) {
         }) || log(name, d)
     );
 
-    // clone.stdout.on("data", (data) => console.log(41, data));
-
     if (clone.code != 0) {
-      console.log(`git clone --branch=${branch} ${repo} ${root_path} `);
+      console.log(
+        106,
+        `error git clone --branch=${branch} ${repo} ${root_path} `
+      );
+
       throw new Error(clone.stderr);
     }
     await fs.writeFileSync(`${root_path}/.env`, content);
@@ -112,12 +154,99 @@ async function deploy(props) {
         }) || log(name, d)
     );
 
-    shell.cd(PWD);
+    changePath(PWD);
     // process.chdir(PWD);
   } catch (err) {
     console.log(54, err);
-    shell.cd(PWD);
+
     // process.chdir(PWD);
+    changePath(PWD);
+  }
+}
+
+async function remove(props) {
+  console.log(152, props);
+  let root_path = null;
+  const { name } = props;
+
+  if (!name) {
+    return console.log("name is required");
+  }
+
+  const removeDir = (root_path) =>
+    root_path && fs.rmSync(root_path, { recursive: true, force: true });
+
+  try {
+    root_path = path.join(PWD, "../apps", `${name}`);
+
+    console.log(156, fs.existsSync(root_path), root_path);
+
+    if (!fs.existsSync(root_path)) {
+      throw new Error(`unable to remove, root_path ${root_path} is not found`);
+    }
+
+    //TODO - make docker-compose.yml dynamic
+    const composePath = `${root_path}/docker-compose.yml`;
+    if (!fs.existsSync(composePath)) {
+      throw new Error(
+        `unable to remove, docker-compose.yml ${composePath} is not found`
+      );
+    }
+
+    /**
+     * down container
+     */
+    changePath(root_path);
+
+    const down = await runScript(
+      "docker compose down",
+      [],
+      {
+        cwd: root_path,
+      },
+      (d) =>
+        workerpool.workerEmit({
+          message: d,
+        }) || log(name, d),
+      (d) =>
+        workerpool.workerEmit({
+          message: d,
+        }) || log(name, d)
+    );
+
+    if (down.code !== 0) {
+      throw new Error(down.stderr);
+    }
+
+    /**clean */
+
+    await runScript(
+      "docker system prune -f",
+      [],
+      {},
+      (d) =>
+        workerpool.workerEmit({
+          message: d,
+        }) || log(name, d),
+      (d) =>
+        workerpool.workerEmit({
+          message: d,
+        }) || log(name, d)
+    );
+
+    removeDir(root_path);
+    removeLogFile(name);
+    // process.chdir(PWD);
+    changePath(PWD);
+  } catch (err) {
+    /** remove directory*/
+    console.log(216, err);
+    console.log(217, root_path);
+
+    removeDir(root_path);
+    removeLogFile(name);
+    // process.chdir(PWD);
+    changePath(PWD);
   }
 }
 
@@ -126,27 +255,5 @@ async function deploy(props) {
 
 workerpool.worker({
   deploy: deploy,
+  remove: remove,
 });
-
-async function runScript(script, ar, opts, stdoutCallback, stderrCallback) {
-  return await new Promise((resolve, reject) => {
-    const child = spawn(script, ar || [], {
-      shell: true,
-      stdio: ["inherit"],
-      encoding: "utf-8",
-      ...(opts || {}),
-    });
-    child.stdout.on("data", async (data) => {
-      data = data.toString();
-      stdoutCallback(data);
-    });
-    child.stderr.on("data", async (data) => {
-      data = data.toString();
-      stderrCallback(data);
-    });
-    child.on("close", async (code) => {
-      // console.log(output);
-      resolve({ code });
-    });
-  });
-}
