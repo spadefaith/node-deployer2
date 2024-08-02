@@ -1,14 +1,14 @@
 import 'dotenv/config';
-import { create, getMeta, getOne, options, paginate, remove, update } from './controller';
+import { create,  getOne } from './controller';
 import Lifecycle from './lifecycle';
 import express from 'express';
 import VerifyToken from '~/server/middlewares/VerifyToken';
 
-const EnvAdminModule = express.Router();
+const ProxyAdminModule = express.Router();
 /**
  * get
  */
-EnvAdminModule.get("/",
+ProxyAdminModule.get("/",
 	async (req,res,next) => {
 		const get = await getOne(req.query);
 		return res.json({ status: 1, data: get });
@@ -18,7 +18,7 @@ EnvAdminModule.get("/",
 /**
  * create
  */
-EnvAdminModule.post(
+ProxyAdminModule.post(
 	"/",
 	VerifyToken,
 	async (req,res,next) => {
@@ -29,56 +29,5 @@ EnvAdminModule.post(
 	}
 );
 
-/**
- * delete
- */
-EnvAdminModule.delete(
-	"/",
-	async (req,res,next) => {
-		const deleted = await remove(req.body);
-		return res.json({ status: 1, data: deleted });
-	}
-);
 
-/**
- * update
- */
-EnvAdminModule.put(
-	"/",
-	async (req,res,next) => {
-		const updated = await update(req.body);
-		return res.json({ status: 1, data: updated });
-	}
-);
-
-/**
- * meta
- */
-EnvAdminModule.get("/meta",
-	async (req,res,next) => {	
-		const meta = await getMeta(req.query.app_id);
-		return res.json({ status: 1, data:meta  });
-	}
-);
-
-/**
- * meta
- */
-EnvAdminModule.get(
-	"/paginate",
-	async (req,res,next) => {
-		return res.json({ status: 1, data: await paginate(req.query) });
-	}
-);
-
-/**
- * options
- */
-EnvAdminModule.get(
-	"/options",
-	async (req,res,next) => {
-		return res.json({ status: 1, data: await options(req.query as any) });
-	}
-);
-
-export default EnvAdminModule;
+export default ProxyAdminModule;
