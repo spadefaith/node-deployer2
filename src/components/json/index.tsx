@@ -14,7 +14,6 @@ const JsonEditor = component$((props: { content?: any; name: string }) => {
     props.content ? JSON.stringify(props.content, null, 4) : ""
   );
   useVisibleTask$(() => {
-    console.log(17, { content: props.content, name: props.name });
     const editor = new JSONEditor({
       target: containerRef.value,
       props: {
