@@ -4,6 +4,7 @@ import {
   useSignal,
   useStyles$,
   useTask$,
+  useVisibleTask$,
 } from "@builder.io/qwik";
 import { server$, useLocation } from "@builder.io/qwik-city";
 import Breadcrumb from "~/components/breadcrumb";
@@ -48,6 +49,12 @@ export default component$((props) => {
   useTask$(async () => {
     app.value = await getRecord();
     console.log(50, app.value);
+  });
+
+  useVisibleTask$(({ track }) => {
+    track(() => app.value);
+
+    console.log(57, app.value);
   });
 
   const submitHandler = $(async (e) => {
