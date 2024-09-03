@@ -34,7 +34,7 @@ const JsonEditor = component$((props: { content?: any; name: string }) => {
       },
     });
 
-    console.log(editor);
+    // console.log(editor);
   });
 
   return (
