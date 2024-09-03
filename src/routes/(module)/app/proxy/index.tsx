@@ -45,6 +45,7 @@ export const getRecord = server$(async function () {
 export default component$((props) => {
   useStyles$(styles);
   const app = useSignal<any>({});
+  const configContent = useSignal("");
   const location = useLocation();
   useTask$(async () => {
     app.value = await getRecord();
@@ -55,6 +56,8 @@ export default component$((props) => {
     track(() => app.value);
 
     console.log(57, app.value);
+
+    configContent.value = app.value.config;
   });
 
   const submitHandler = $(async (e) => {
@@ -75,7 +78,7 @@ export default component$((props) => {
       />
 
       <form onSubmit$={submitHandler} preventdefault:submit>
-        <JsonEditor name="config" content={app.value.config} />
+        <JsonEditor name="config" content={configContent} />
         <br />
         <button type="submit" class="btn btn-dark">
           Submit

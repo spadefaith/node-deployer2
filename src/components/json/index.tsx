@@ -13,8 +13,9 @@ const JsonEditor = component$((props: { content?: any; name: string }) => {
   const contentValue = useSignal(
     props.content ? JSON.stringify(props.content, null, 4) : ""
   );
-  useVisibleTask$(() => {
-    console.log(17, { content: props.content, name: props.name });
+  useVisibleTask$(({ track }) => {
+    track(() => props.content.value);
+    console.log(17, { content: props.content.value, name: props.name });
     const editor = new JSONEditor({
       target: containerRef.value,
       props: {
@@ -29,7 +30,7 @@ const JsonEditor = component$((props: { content?: any; name: string }) => {
           contentValue.value = updatedContent.text;
         },
         content: {
-          text: JSON.stringify(props.content || {}, null, 4),
+          text: JSON.stringify(props.content.value || {}, null, 4),
         },
       },
     });
