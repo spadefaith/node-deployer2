@@ -47,6 +47,7 @@ export default component$((props) => {
   const location = useLocation();
   useTask$(async () => {
     app.value = await getRecord();
+    console.log(50, app.value);
   });
 
   const submitHandler = $(async (e) => {
