@@ -7,6 +7,9 @@ const PWD = process.env.PWD;
 
 export const log = (name, message) => {
   const logFile = `${PWD}/logs/${name}.txt`;
+  if (!fs.existsSync(`${PWD}/logs`)) {
+    fs.mkdirSync(`${PWD}/logs`, { recursive: true });
+  }
   if (!fs.existsSync(logFile)) {
     fs.writeFileSync(logFile, message);
   } else {
