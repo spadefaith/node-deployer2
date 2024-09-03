@@ -6,7 +6,7 @@ import {
   useTask$,
   useVisibleTask$,
 } from "@builder.io/qwik";
-import type { RequestHandler } from "@builder.io/qwik-city";
+import { useLocation, type RequestHandler } from "@builder.io/qwik-city";
 import styles from "./layout.scss?inline";
 import Sidebar from "~/components/sidebar";
 import { Toolbar } from "~/components/toolbar";
@@ -14,6 +14,7 @@ import {
   getSidebar,
   getToolbar,
 } from "~/server/modules/admin/role-permission/controller";
+import { getModule } from "~/utils";
 export const onGet: RequestHandler = async ({ cacheControl }) => {
   // Control caching for this request for best performance and to reduce hosting costs:
   // https://qwik.dev/docs/caching/
@@ -29,8 +30,13 @@ export default component$(() => {
   useStyles$(styles);
   const sidebar = useSignal([]);
   const toolbar = useSignal([]);
+  const location = useLocation();
+
   useTask$(async () => {
-    toolbar.value = await getToolbar({ role_id: 1 });
+    toolbar.value = await getToolbar({
+      role_id: 1,
+      module: getModule(location.url.pathname),
+    });
     sidebar.value = await getSidebar({ role_id: 1 });
   });
 

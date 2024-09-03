@@ -7,6 +7,7 @@ export interface AppsAttributes {
   webhook_url?: string;
   compose_path?: string;
   root_path?: string;
+  proxy_path?: string;
   provider?: string;
   repo?: string;
   branch?: string;
@@ -24,7 +25,7 @@ export interface AppsAttributes {
 
 export type AppsPk = "app_id";
 export type AppsId = Apps[AppsPk];
-export type AppsOptionalAttributes = "webhook_url" | "compose_path" | "root_path" | "provider" | "repo" | "branch" | "name" | "old_name" | "domain" | "category" | "status" | "created_by" | "modified_by" | "hooked_date" | "created_date" | "updated_date";
+export type AppsOptionalAttributes = "webhook_url" | "compose_path" | "root_path" | "proxy_path" | "provider" | "repo" | "branch" | "name" | "old_name" | "domain" | "category" | "status" | "created_by" | "modified_by" | "hooked_date" | "created_date" | "updated_date";
 export type AppsCreationAttributes = Optional<AppsAttributes, AppsOptionalAttributes>;
 
 export class Apps extends Model<AppsAttributes, AppsCreationAttributes> implements AppsAttributes {
@@ -32,6 +33,7 @@ export class Apps extends Model<AppsAttributes, AppsCreationAttributes> implemen
   webhook_url?: string;
   compose_path?: string;
   root_path?: string;
+  proxy_path?: string;
   provider?: string;
   repo?: string;
   branch?: string;
@@ -80,6 +82,10 @@ export class Apps extends Model<AppsAttributes, AppsCreationAttributes> implemen
       type: DataTypes.STRING(255),
       allowNull: true,
       unique: "apps_root_path_key"
+    },
+    proxy_path: {
+      type: DataTypes.STRING(255),
+      allowNull: true
     },
     provider: {
       type: DataTypes.STRING(50),

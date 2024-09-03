@@ -9,6 +9,7 @@ import shell from 'shelljs';
 import fs from 'fs';
 import ConfigParser from '@webantic/nginx-config-parser';
 import os from 'os';
+import path from 'node:path';
 const parser = new ConfigParser();
 
 const pk = getPk(Models.Envs);
@@ -29,24 +30,23 @@ export const create = async (lifecycle: Lifecycle) => {
 		throw new Error('app not found');
 	};
 
-	const {domain, name} = find;
+	const {domain, name, proxy_path} = find;
 
-	const configPath = `/etc/nginx/sites-available/${domain}`;
-	const configEnablePath = `/etc/nginx/sites-enabled/${domain}`;
-
-	if(!domain){
+	if(!proxy_path){
 		throw new Error('app has no domain');
 	};
 
 
 	const text = parser.toConf(JSON.parse(config));
 
-
-	fs.writeFileSync(configPath, text);
-	if(!fs.existsSync(configEnablePath)){
-		shell.exec(`sudo ln -s ${configPath} ${configEnablePath}`);
+	if(!fs.existsSync(path.join(process.env.PWD, '../proxy'))){
+		fs.mkdirSync(path.join(process.env.PWD, '../proxy'),{recursive:true});
 	}
+
+
+	fs.writeFileSync(proxy_path, text);
 	shell.exec(`sudo service nginx restart`);
+	shell.exec(`sudo service nginx reload`);
 };
 
 
@@ -63,17 +63,17 @@ export const getOne: any = async (payload) => {
 			throw new Error('app not found');
 		};
 	
-		const {domain, name} = find;
+		const {domain, name, proxy_path} = find;
 		let config = {};
 	
 		if(!domain){
 			throw new Error('app has no domain');
 		};
 	
-		const configPath = `/etc/nginx/sites-available/${domain}`;
-		const isExist = fs.existsSync(configPath);
+
+		const isExist = fs.existsSync(proxy_path);
 		if(isExist){
-			const cat = shell.exec(`cat ${configPath}`);
+			const cat = shell.exec(`cat ${proxy_path}`);
 			config =   parser.toJSON(cat.stdout);
 		};
 

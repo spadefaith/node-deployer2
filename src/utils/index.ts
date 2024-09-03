@@ -3,6 +3,7 @@ import RecursiveIterator from "recursive-iterator";
 import moment, { type Moment } from "moment";
 import momentTimezone from "moment-timezone";
 import { isServer } from "@builder.io/qwik/build";
+import path from "node:path";
 
 export const Now = (dt?: string) => {
   if (dt) {
@@ -228,4 +229,17 @@ export function sortedQueryString(object) {
   });
 
   return string;
+}
+
+export function getModule(pathname) {
+  const isInclude = (path) => pathname.includes(path);
+  if (isInclude("/app")) {
+    return "app";
+  } else if (isInclude("/app/env")) {
+    return "env";
+  } else if (isInclude("/account")) {
+    return "account";
+  } else if (isInclude("/role")) {
+    return "role";
+  }
 }

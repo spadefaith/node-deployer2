@@ -166,19 +166,18 @@ async function deploy(props) {
 
 async function remove(props) {
   console.log(152, props);
-  let root_path = null;
-  const { name } = props;
+  const { name, root_path } = props;
 
   if (!name) {
     return console.log("name is required");
   }
 
   const removeDir = (root_path) =>
-    root_path && fs.rmSync(root_path, { recursive: true, force: true });
+    root_path &&
+    fs.existsSync(root_path) &&
+    fs.rmSync(root_path, { recursive: true, force: true });
 
   try {
-    root_path = path.join(PWD, "../apps", `${name}`);
-
     console.log(156, fs.existsSync(root_path), root_path);
 
     if (!fs.existsSync(root_path)) {

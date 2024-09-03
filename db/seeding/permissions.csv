@@ -2,3 +2,6 @@ name,description,ref_name,scope,module,sequence
 Account,account,account,main_menu,account,1
 Role,role,role,main_menu,role,1
 App,app,app,main_menu,app,1
+Add,add user,add_account,toolbar,account,1
+Add,add app,add_app,toolbar,app,1
+Add,add env,add_env,toolbar,env,1

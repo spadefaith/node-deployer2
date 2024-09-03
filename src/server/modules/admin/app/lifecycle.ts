@@ -55,6 +55,7 @@ export default class Lifecycle extends BaseLifecycle {
 			throw new Error(`Image name ${props.data.name} is already existed`);
 		};
 		const root = path.join(process.env.PWD, '../apps', `${props.data.name}`);
+		const proxy = path.join(process.env.PWD, '../proxy', `${props.data.domain}`);
 
 
 
@@ -65,6 +66,7 @@ export default class Lifecycle extends BaseLifecycle {
 				app_id:randomUUID(),
 				compose_path: root,
 				root_path: root,
+				proxy_path: proxy,
 			},
 			env
 		};

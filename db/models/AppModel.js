@@ -19,6 +19,7 @@ module.exports = function (Sequelize, DataTypes) {
       root_path: {
         type: DataTypes.STRING,
       },
+      proxy_path: DataTypes.STRING,
       provider: {
         type: DataTypes.STRING(50),
       },
