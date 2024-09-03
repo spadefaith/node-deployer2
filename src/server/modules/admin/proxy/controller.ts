@@ -45,8 +45,8 @@ export const create = async (lifecycle: Lifecycle) => {
 
 
 	fs.writeFileSync(proxy_path, text);
-	shell.exec(`sudo service nginx restart`);
-	shell.exec(`sudo service nginx reload`);
+	shell.exec(`sudo -A service nginx restart`);
+	shell.exec(`sudo -A service nginx reload`);
 };
 
 
