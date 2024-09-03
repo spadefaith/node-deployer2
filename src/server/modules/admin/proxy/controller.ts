@@ -41,16 +41,15 @@ export const create = async (lifecycle: Lifecycle) => {
 
 
 
-	setTimeout(()=>{
-		if(!fs.existsSync(path.join(process.env.PWD, '../proxy'))){
-			fs.mkdirSync(path.join(process.env.PWD, '../proxy'),{recursive:true});
-		}
+	if(!fs.existsSync(path.join(process.env.PWD, '../proxy'))){
+		fs.mkdirSync(path.join(process.env.PWD, '../proxy'),{recursive:true});
+	}
 
 
-		fs.writeFileSync(proxy_path, text);
-		shell.exec(`sudo service nginx restart`);
-		shell.exec(`sudo service nginx reload`);
-	},500)
+	fs.writeFileSync(proxy_path, text);
+	shell.exec(`sudo service nginx restart`);
+	shell.exec(`sudo service nginx reload`);
+	shell.exit(0);
 
 	
 };
