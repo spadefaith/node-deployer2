@@ -77,7 +77,7 @@ export default class Lifecycle extends BaseLifecycle {
 		 * delete all env if found;
 		 */
 		await Models.Apps.update({
-			webhook_url:`${process.env.BASE_URL}/api/admin/app/redeploy/${props.data.app_id}`
+			webhook_url:`${process.env.BASE_URL}/api/redeploy/${props.data.app_id}`
 		},{
 			where:{
 				app_id:props.data.app_id
