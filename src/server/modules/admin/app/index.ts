@@ -8,7 +8,7 @@ import moment from 'moment';
 
 
 
-const _cache = new CacheServerService('deploy');
+
 
 const AppAdminModule = express.Router();
 /**
@@ -110,47 +110,7 @@ AppAdminModule.get(
 	async (req,res,next) => {
 		try {
 			const app_id: string = req.query.app_id as any;
-
-			if(!app_id){
-				throw new Error('app_id is required');
-			};
-			
-			const get = await _cache.getStore(app_id, true);
-      const expiration = moment().add(30, "minutes").format("YYYY-MM-DD HH:mm:ss");
-
-      if (!get) {
-        await _cache.setStore(app_id, {
-          retry: 1,
-          expired: expiration,
-        });
-      } else {
-        const { retry, expired } = get;
-        const retryN = Number(retry);
-        const isExpired = moment().isAfter(moment(expired));
-
-        if (retryN + 1 > 3) {
-          if (isExpired) {
-            await _cache.setStore(app_id, {
-              retry: 1,
-              expired: expiration,
-            });
-          } else {
-            throw new Error("disable login");
-          }
-        } else {
-          await _cache.setStore(app_id, {
-            retry: retryN + 1,
-            expired: get.expired,
-          });
-        }
-      }
-
-
 			const deployed =  await deployApplication(app_id);
-
-
-			await _cache.destroyStore(app_id);
-
 			res.json({ status: 1, data:deployed })
 		} catch(err){
 			next(err);

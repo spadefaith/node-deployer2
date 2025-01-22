@@ -6,10 +6,14 @@ import meta from './meta/meta';
 import Lifecycle from './lifecycle';
 import fs from 'fs';
 import { deployContainer } from './utils';
+import CacheServerService from '~/services/CacheServerService';
+import moment from 'moment';
 const PWD = process.env.PWD;
 
 const pk = getPk(Models.Apps);
 const logCacheData = {};
+
+const _cache = new CacheServerService('deploy');
 
 export const create = async (lifecycle: Lifecycle) => {
 	const { data, env } = await lifecycle.beforeCreate({ data: lifecycle.body });
@@ -197,9 +201,39 @@ export const getLogs = (name)=>{
 export const deployApplication = async (app_id)=>{
 	if(!app_id){
 		throw new Error('app_id is required');
+	};
+
+	// throw new Error('deployApplication is not implemented');
+	const get = await _cache.getStore(app_id, true);
+	const expiration = moment().add(30, "minutes").format("YYYY-MM-DD HH:mm:ss");
+
+	if (!get) {
+		await _cache.setStore(app_id, {
+		retry: 1,
+		expired: expiration,
+		});
+	} else {
+		const { retry, expired } = get;
+		const retryN = Number(retry);
+		const isExpired = moment().isAfter(moment(expired));
+
+		if (retryN + 1 > 3) {
+		if (isExpired) {
+			await _cache.setStore(app_id, {
+			retry: 1,
+			expired: expiration,
+			});
+		} else {
+			throw new Error("disable login");
+		}
+		} else {
+		await _cache.setStore(app_id, {
+			retry: retryN + 1,
+			expired: get.expired,
+		});
+		}
 	}
 
-
-
 	await deployContainer(app_id);
+	await _cache.destroyStore(app_id);
 }

@@ -61,6 +61,7 @@
     "dockerode": "^4.0.2",
     "express": "4.19.2",
     "fast-csv": "^5.0.1",
+    "flat-cache": "4.0.1",
     "hono": "^4.4.13",
     "js-cookie": "^3.0.5",
     "json-schema-to-zod": "^2.3.1",
