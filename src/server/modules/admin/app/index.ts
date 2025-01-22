@@ -106,7 +106,7 @@ AppAdminModule.get(
  */
 AppAdminModule.get(
 	"/deploy",
-	VerifyToken,
+	// VerifyToken,
 	async (req,res,next) => {
 		try {
 			const app_id: string = req.query.app_id as any;
